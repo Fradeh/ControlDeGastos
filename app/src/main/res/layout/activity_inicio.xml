@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/layoutInicio"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#FFFFFF"
+    tools:context=".AUTH.InicioActivity">
+
+    <!-- Logo centrado -->
+    <ImageView
+        android:id="@+id/logoApp"
+        android:layout_width="150dp"
+        android:layout_height="150dp"
+        android:src="@drawable/logo"
+    android:layout_centerInParent="true"
+    android:contentDescription="Logo App"
+    android:scaleType="centerInside"
+    android:alpha="0"
+    android:translationY="50dp" />
+
+    <!-- Texto animado -->
+    <TextView
+        android:id="@+id/textoBienvenida"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Cargando, por favor espere... \n Asegurate de tener conexión a internet"
+        android:textColor="#555"
+        android:textSize="16sp"
+        android:layout_below="@id/logoApp"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="16dp"
+        android:alpha="0" />
+
+
+</RelativeLayout>

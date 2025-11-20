@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="#F9FAFC"
+    android:padding="16dp">
+
+    <!-- Botón Atrás -->
+    <Button
+        android:id="@+id/btnAtras"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="start"
+        android:layout_marginBottom="8dp"
+        android:backgroundTint="#eeeeee"
+        android:text="← Atrás"
+        android:textAllCaps="false"
+        android:textColor="#1976D2" />
+
+    <TextView
+        android:id="@+id/textTituloFijos"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Gastos Fijos"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        android:gravity="center"
+        android:textColor="#222"
+        android:layout_marginBottom="12dp"/>
+
+    <!-- Cambiado a RecyclerView -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerViewFijos"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:background="@android:color/white"
+        android:layout_marginBottom="8dp"/>
+
+    <!-- SALDO -->
+    <TextView
+        android:id="@+id/txtSaldoFijos"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Saldo disponible: $0.00"
+        android:textSize="18sp"
+        android:textColor="#388E3C"
+        android:gravity="center"
+        android:layout_marginBottom="12dp"/>
+
+    <!-- Agregar nuevo gasto fijo -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:layout_marginBottom="8dp">
+
+        <EditText
+            android:id="@+id/edtNombreFijo"
+            android:layout_width="0dp"
+            android:layout_weight="2"
+            android:layout_height="wrap_content"
+            android:hint="Nombre (ej: Luz)"
+            android:inputType="text"/>
+
+        <EditText
+            android:id="@+id/edtMontoFijo"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:hint="Monto"
+            android:inputType="numberDecimal"
+            android:layout_marginStart="8dp"/>
+
+        <Button
+            android:id="@+id/btnAgregarFijo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Agregar"
+            android:layout_marginStart="8dp"
+            android:backgroundTint="#1976D2"
+            android:textColor="@android:color/white"/>
+
+    </LinearLayout>
+</LinearLayout>

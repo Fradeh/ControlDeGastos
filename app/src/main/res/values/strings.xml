@@ -1,0 +1,22 @@
+<resources>
+    <string name="app_name">ControlDeGastos</string>
+
+    <string-array name="categorias_gasto">
+        <item>Transporte</item>
+        <item>Comida</item>
+        <item>Salud</item>
+        <item>Entretenimiento</item>
+        <item>Supermercado</item>
+        <item>Educación</item>
+        <item>Belleza</item>
+        <item>Tecnología</item>
+        <item>Vehículo</item>
+        <item>Lotería</item>
+        <item>Ocio</item>
+        <item>Otros</item>
+    </string-array>
+
+    <string name="navigation_drawer_open">Abrir menú</string>
+    <string name="navigation_drawer_close">Cerrar menú</string>
+
+</resources>

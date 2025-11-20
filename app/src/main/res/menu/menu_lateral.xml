@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/nav_manual_usuario"
+        android:title="Manual de Usuario"
+        android:icon="@drawable/ic_ayuda" />
+
+    <item
+        android:id="@+id/nav_agregar_ingreso"
+        android:title="Agregar ingreso"
+        android:icon="@drawable/ic_mas_dinero" />
+
+    <item
+        android:id="@+id/nav_grafica_categorias"
+        android:title="Gráfica de Categorías"
+        android:icon="@drawable/ic_pie_chart" />
+
+    <item
+        android:id="@+id/nav_exportar_pdf"
+        android:title="Exportar a PDF"
+        android:icon="@drawable/ic_pdf" />
+
+    <item
+        android:id="@+id/nav_guardar_backup"
+        android:icon="@drawable/ic_cloud_upload"
+        android:title="Guardar Backup" />
+
+    <item
+        android:id="@+id/nav_restaurar_backup"
+        android:icon="@drawable/ic_cloud_download"
+        android:title="Restaurar Backup" />
+
+    <item
+        android:id="@+id/nav_beneficios_premium"
+        android:title="Ver beneficios Premium"
+        android:icon="@drawable/ic_star" />
+
+    <item
+        android:id="@+id/nav_editar_perfil"
+        android:title="Editar Perfil"
+        android:icon="@drawable/ic_editar_usuario" />
+
+    <item android:title="" />   <!-- separador en blanco -->
+
+    <item
+        android:id="@+id/nav_contactenos"
+        android:title="Contáctenos"
+        android:icon="@drawable/ic_email" />
+
+    <item
+        android:id="@+id/nav_cerrar_sesion"
+        android:title="Cerrar Sesión"
+        android:icon="@drawable/ic_sesion" />
+
+</menu>

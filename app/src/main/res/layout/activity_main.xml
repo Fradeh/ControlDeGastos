@@ -1,0 +1,232 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.drawerlayout.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/drawer_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#F9FAFC">
+
+    <ProgressBar
+        android:id="@+id/progressBarMain"
+        style="?android:attr/progressBarStyleLarge"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:visibility="gone"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <!-- Toolbar -->
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="#1976D2"
+            android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+            android:elevation="4dp" />
+
+        <!-- Header con logo y textos -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="10dp">
+
+            <ImageView
+                android:id="@+id/logoImage"
+                android:layout_width="120dp"
+                android:layout_height="115dp"
+                android:layout_gravity="center_horizontal"
+                android:src="@drawable/logo"
+                android:layout_marginBottom="0dp" />
+
+            <TextView
+                android:id="@+id/textTitulo"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="Control de Gastos"
+                android:textColor="#222"
+                android:textSize="20sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/textSubtitulo"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="Registra y consulta tus gastos diarios"
+                android:textColor="#555"
+                android:textSize="16sp"
+                android:layout_marginBottom="0dp" />
+        </LinearLayout>
+
+        <!-- 🔽 Spinner básico para filtrar por categoría -->
+        <!-- Fila: Spinner (izq) + botón borrar (der) -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginTop="0dp">
+
+            <Spinner
+                android:id="@+id/spnCategoria"
+                android:layout_width="4dp"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="200dp"
+                android:layout_marginStart="0dp"
+                android:layout_weight="1"
+                android:spinnerMode="dropdown" />
+
+            <ImageButton
+                android:id="@+id/btnBorrarFiltro"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:contentDescription="Borrar"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:padding="6dp"
+                android:src="@drawable/ic_delete_forever_24" />
+        </LinearLayout>
+
+        <!-- RecyclerView INMEDIATAMENTE debajo del subtítulo -->
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerViewGastos"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:padding="6dp"
+            android:scrollbars="vertical"
+            android:clipToPadding="false" />
+
+        <!-- Tarjeta de promoción Premium -->
+        <LinearLayout
+            android:id="@+id/cardPromoPremium"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="#FFF3CD"
+            android:orientation="vertical"
+            android:padding="16dp"
+            android:visibility="gone"
+            android:layout_marginTop="12dp"
+            android:elevation="4dp">
+
+            <TextView
+                android:id="@+id/txtPromoTitulo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="¡Desbloquea Premium!"
+                android:textStyle="bold"
+                android:textSize="18sp"
+                android:textColor="#000000"/>
+
+            <TextView
+                android:id="@+id/txtPromoDetalle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Obtén más funcionalidades, sin anuncios y mayor control financiero"
+                android:textColor="#333333"
+                android:layout_marginTop="4dp"/>
+
+            <Button
+                android:id="@+id/btnVerBeneficios"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Ver beneficios"
+                android:layout_marginTop="8dp"/>
+        </LinearLayout>
+
+        <!-- Botones y resumen al final -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="8dp">
+
+            <Button
+                android:id="@+id/btnIngresoMensual"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Agregar Ingreso Mensual"
+                android:backgroundTint="#1976D2"
+                android:textColor="@android:color/white"
+                android:layout_marginHorizontal="30dp"
+                android:layout_marginTop="3dp"
+                android:layout_marginBottom="2dp"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:background="@drawable/ic_launcher_background"
+                android:padding="10dp"
+                android:layout_marginHorizontal="18dp"
+                android:layout_marginBottom="2dp"
+                android:gravity="center">
+
+                <TextView
+                    android:id="@+id/txtIngresoResumen"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Ingreso mensual: $0.00"
+                    android:textColor="#222"
+                    android:textSize="15sp" />
+
+                <TextView
+                    android:id="@+id/txtGastadoResumen"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Gastado: $0.00"
+                    android:textColor="#D32F2F"
+                    android:textSize="15sp" />
+
+                <TextView
+                    android:id="@+id/txtSaldoResumen"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Saldo disponible: $0.00"
+                    android:textColor="#388E3C"
+                    android:textStyle="bold"
+                    android:textSize="17sp"
+                    android:layout_marginTop="2dp" />
+            </LinearLayout>
+
+            <Button
+                android:id="@+id/btnAgregar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:backgroundTint="#1976D2"
+                android:elevation="4dp"
+                android:text="Agregar Gasto"
+                android:textAllCaps="false"
+                android:textColor="@android:color/white"
+                android:layout_marginHorizontal="30dp"
+                android:layout_marginVertical="2dp" />
+
+            <Button
+                android:id="@+id/btnVerGastosFijos"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Ver Gastos Fijos"
+                android:backgroundTint="#FFC107"
+                android:textColor="@android:color/white"
+                android:layout_marginHorizontal="30dp"
+                android:layout_marginBottom="8dp" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <!-- Navigation Drawer -->
+    <com.google.android.material.navigation.NavigationView
+        android:id="@+id/nav_view"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_gravity="start"
+        android:fitsSystemWindows="true"
+        android:background="@android:color/white"
+        app:headerLayout="@layout/nav_header"
+        app:menu="@menu/menu_lateral" />
+</androidx.drawerlayout.widget.DrawerLayout>

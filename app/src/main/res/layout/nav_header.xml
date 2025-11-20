@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="180dp"
+    android:background="#1976D2"
+    android:gravity="bottom"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <ImageView
+        android:id="@+id/imgNavFoto"
+        android:layout_width="64dp"
+        android:layout_height="64dp"
+        android:scaleType="centerCrop"
+        android:src="@drawable/ic_usuario"
+        android:background="@drawable/circle_border"
+        android:padding="4dp"
+        android:contentDescription="Usuario" />
+
+    <TextView
+        android:id="@+id/txtNombreUsuario"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Nombre del usuario"
+        android:textColor="@android:color/white"
+        android:textStyle="bold"
+        android:textSize="18sp"
+        android:layout_marginTop="8dp" />
+
+    <TextView
+        android:id="@+id/txtCorreoUsuario"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="correo@ejemplo.com"
+        android:textColor="@android:color/white"
+        android:textSize="14sp" />
+
+    <TextView
+        android:id="@+id/tvVersionApp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Versión 1.0"
+        android:textSize="10sp"
+        android:textColor="#AAFFFFFF"
+        android:layout_marginTop="4dp"
+        android:layout_marginStart="4dp" />
+</LinearLayout>

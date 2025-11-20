@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#F5F5F5"
+    android:gravity="center"
+    android:orientation="vertical"
+    android:padding="24dp">
+
+    <ImageView
+        android:layout_width="160dp"
+        android:layout_height="160dp"
+        android:src="@drawable/ic_star"
+        android:layout_marginBottom="20dp" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="¡Obtén la versión Premium!"
+        android:textSize="22sp"
+        android:textStyle="bold"
+        android:textColor="#222"
+        android:gravity="center"
+        android:layout_marginBottom="12dp" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="🔓 Desbloquea funciones exclusivas:\n\n ✅ Elimina todos los anuncios\n\n 📊 Gráficas detalladas por categoría\n\n ☁️ Backup automático en la nube\n\n 🔔 Notificaciones de gastos fijos\n\n 📄 Exporta tus gastos a PDF\n\n 🔗 Sincronización entre dispositivos\n\n ⌛ Y MUCHAS MÁS."
+        android:textSize="16sp"
+        android:textColor="#555"
+        android:gravity="center"
+        android:layout_marginBottom="24dp" />
+
+    <Button
+        android:id="@+id/btnLoQuiero"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="¡Lo quiero!"
+        android:backgroundTint="#FF9800"
+        android:textColor="@android:color/white"
+        android:paddingHorizontal="30dp"
+        android:paddingVertical="10dp" />
+
+    <Button
+        android:id="@+id/btnInicio"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Volver al menú"
+        android:backgroundTint="#1976D2"
+        android:textColor="@android:color/white"
+        android:paddingHorizontal="30dp"
+        android:paddingVertical="10dp" />
+</LinearLayout>

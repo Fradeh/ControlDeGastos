@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "383946231429",
+    "firebase_url": "https://controldegastos-94271-default-rtdb.firebaseio.com",
+    "project_id": "controldegastos-94271",
+    "storage_bucket": "controldegastos-94271.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:383946231429:android:790f913be7faf07b5523ec",
+        "android_client_info": {
+          "package_name": "com.freddy.controldegastos"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDu-VaABseVkfvHeiARGuBh_A2mGYnJ9Tc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
