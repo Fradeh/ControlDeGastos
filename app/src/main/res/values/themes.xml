@@ -6,4 +6,11 @@
     </style>
 
     <style name="Theme.ControlDeGastos" parent="Base.Theme.ControlDeGastos" />
+
+    <style name="NavDrawerItemText">
+        <item name="android:fontFamily">sans</item>
+        <item name="android:textSize">14sp</item>
+        <item name="android:textStyle">normal</item>
+        <item name="android:letterSpacing">0</item>
+    </style>
 </resources>

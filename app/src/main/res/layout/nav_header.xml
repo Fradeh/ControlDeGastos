@@ -1,47 +1,74 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="180dp"
-    android:background="#1976D2"
-    android:gravity="bottom"
+    android:layout_height="144dp"
+    android:background="@drawable/bg_nav_header"
+    android:gravity="bottom|start"
     android:orientation="vertical"
-    android:padding="16dp">
+    android:paddingStart="18dp"
+    android:paddingTop="18dp"
+    android:paddingEnd="18dp"
+    android:paddingBottom="14dp">
 
-    <ImageView
-        android:id="@+id/imgNavFoto"
-        android:layout_width="64dp"
-        android:layout_height="64dp"
-        android:scaleType="centerCrop"
-        android:src="@drawable/ic_usuario"
-        android:background="@drawable/circle_border"
-        android:padding="4dp"
-        android:contentDescription="Usuario" />
-
-    <TextView
-        android:id="@+id/txtNombreUsuario"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Nombre del usuario"
-        android:textColor="@android:color/white"
-        android:textStyle="bold"
-        android:textSize="18sp"
-        android:layout_marginTop="8dp" />
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
 
-    <TextView
-        android:id="@+id/txtCorreoUsuario"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="correo@ejemplo.com"
-        android:textColor="@android:color/white"
-        android:textSize="14sp" />
+        <ImageView
+            android:id="@+id/imgNavFoto"
+            android:layout_width="52dp"
+            android:layout_height="52dp"
+            android:background="@drawable/circle_border"
+            android:contentDescription="Usuario"
+            android:padding="3dp"
+            android:scaleType="centerCrop"
+            android:src="@drawable/ic_usuario" />
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="12dp"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/txtNombreUsuario"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:text="Nombre del usuario"
+                android:textColor="@android:color/white"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/txtCorreoUsuario"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="2dp"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:text="correo@ejemplo.com"
+                android:textColor="#DDEBFF"
+                android:textSize="12sp" />
+        </LinearLayout>
+    </LinearLayout>
 
     <TextView
         android:id="@+id/tvVersionApp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:background="@drawable/bg_version_chip"
+        android:gravity="center"
+        android:paddingStart="10dp"
+        android:paddingTop="4dp"
+        android:paddingEnd="10dp"
+        android:paddingBottom="4dp"
         android:text="Versión 1.0"
-        android:textSize="10sp"
-        android:textColor="#AAFFFFFF"
-        android:layout_marginTop="4dp"
-        android:layout_marginStart="4dp" />
+        android:textColor="#EAF2FF"
+        android:textSize="10sp" />
 </LinearLayout>
