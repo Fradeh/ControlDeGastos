@@ -12,6 +12,7 @@ import android.widget.Toast;
 import android.widget.ImageButton;
 import com.freddy.controldegastos.UTILS.GraficasUtils;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.Context;
@@ -32,6 +33,8 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.view.WindowCompat;
+import androidx.core.view.WindowInsetsControllerCompat;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.recyclerview.widget.ItemTouchHelper;
@@ -109,7 +112,12 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        WindowCompat.setDecorFitsSystemWindows(getWindow(), true);
         setContentView(R.layout.activity_main);
+        getWindow().setStatusBarColor(Color.parseColor("#FFFDF7"));
+        WindowInsetsControllerCompat insetsController =
+                new WindowInsetsControllerCompat(getWindow(), getWindow().getDecorView());
+        insetsController.setAppearanceLightStatusBars(true);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             if (checkSelfPermission(android.Manifest.permission.POST_NOTIFICATIONS)
@@ -129,6 +137,9 @@ public class MainActivity extends AppCompatActivity {
 
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setTitle("");
+        }
         drawerLayout = findViewById(R.id.drawer_layout);
         navigationView = findViewById(R.id.nav_view);
 
@@ -668,16 +679,16 @@ public class MainActivity extends AppCompatActivity {
         //  Aquí va el formato con paréntesis para los ingresos extra
         if (ingresosExtra > 0.0001) {
             txtIngresoResumen.setText(String.format(Locale.getDefault(),
-                    "Ingreso mensual: $%.2f (+%.2f)", ingresoMensual, ingresosExtra));
+                    "Ingreso\n$%.2f\n+ $%.2f", ingresoMensual, ingresosExtra));
         } else {
             txtIngresoResumen.setText(String.format(Locale.getDefault(),
-                    "Ingreso mensual: $%.2f", ingresoMensual));
+                    "Ingreso\n$%.2f", ingresoMensual));
         }
 
         txtGastadoResumen.setText(String.format(Locale.getDefault(),
-                "Gastado: $%.2f", totalGastado));
+                "Gastado\n$%.2f", totalGastado));
         txtSaldoResumen.setText(String.format(Locale.getDefault(),
-                "Saldo disponible: $%.2f", saldo));
+                "Saldo\n$%.2f", saldo));
     }
 
 
