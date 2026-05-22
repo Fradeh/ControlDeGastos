@@ -1,93 +1,120 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:padding="24dp"
-    android:gravity="center"
-    tools:context="com.freddy.controldegastos.AUTH.LoginActivity">
+    android:background="#FFF8FF"
+    android:fillViewport="true"
+    android:padding="22dp">
 
-    <ImageView
-        android:layout_width="134dp"
-        android:layout_height="129dp"
-        android:layout_gravity="center"
-        android:src="@drawable/logo" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Iniciar Sesión"
-        android:textSize="22sp"
-        android:textStyle="bold"
-        android:layout_marginBottom="24dp"
-        android:layout_gravity="center" />
-
-    <ScrollView
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="#FAFAFA"
-        android:padding="24dp">
+        android:layout_gravity="center"
+        android:gravity="center_horizontal"
+        android:orientation="vertical">
+
+        <ImageView
+            android:layout_width="118dp"
+            android:layout_height="118dp"
+            android:contentDescription="Control de Gastos"
+            android:src="@drawable/logo" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="Bienvenido"
+            android:textColor="#27313F"
+            android:textSize="26sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:gravity="center"
+            android:text="Inicia sesión para continuar con tus gastos"
+            android:textColor="#6E7781"
+            android:textSize="14sp" />
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:layout_marginTop="24dp"
+            android:background="@drawable/bg_auth_card"
+            android:orientation="vertical"
+            android:padding="18dp">
 
             <EditText
                 android:id="@+id/edtCorreoLogin"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="16dp"
+                android:layout_height="54dp"
+                android:background="@drawable/bg_auth_input"
                 android:hint="Correo electrónico"
-                android:inputType="textEmailAddress" />
+                android:inputType="textEmailAddress"
+                android:paddingStart="14dp"
+                android:paddingEnd="14dp"
+                android:singleLine="true"
+                android:textColor="#27313F"
+                android:textColorHint="#9A958C"
+                android:textSize="15sp" />
 
             <EditText
                 android:id="@+id/edtContrasenaLogin"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="12dp"
+                android:layout_height="54dp"
+                android:layout_marginTop="12dp"
+                android:background="@drawable/bg_auth_input"
                 android:hint="Contraseña"
-                android:inputType="textPassword" />
+                android:inputType="textPassword"
+                android:paddingStart="14dp"
+                android:paddingEnd="14dp"
+                android:singleLine="true"
+                android:textColor="#27313F"
+                android:textColorHint="#9A958C"
+                android:textSize="15sp" />
 
             <CheckBox
                 android:id="@+id/chkMostrarLogin"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="16dp"
-                android:text="Mostrar contraseña" />
+                android:layout_marginTop="10dp"
+                android:text="Mostrar contraseña"
+                android:textColor="#4B5563"
+                android:textSize="14sp" />
 
-            <Button
+            <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/btnIniciarSesion"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="30dp"
-                android:backgroundTint="#6C63FF"
+                android:layout_height="52dp"
+                android:layout_marginTop="14dp"
+                android:background="@drawable/bg_auth_primary_button"
                 android:text="Iniciar sesión"
-                android:textColor="#FFF" />
+                android:textAllCaps="false"
+                android:textColor="@android:color/white"
+                android:textSize="15sp"
+                android:textStyle="bold"
+                app:backgroundTint="@null" />
 
             <TextView
                 android:id="@+id/txtIrRegistro"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="18dp"
                 android:gravity="center"
-                android:layout_marginBottom="20dp"
                 android:text="¿No tienes cuenta? Regístrate"
-                android:textColor="#6C63FF" />
+                android:textColor="#2F80ED"
+                android:textStyle="bold" />
 
             <TextView
                 android:id="@+id/txtOlvidarContrasena"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:clickable="true"
-                android:focusable="true"
+                android:layout_marginTop="14dp"
                 android:gravity="center"
-                android:paddingTop="8dp"
                 android:text="¿Olvidaste tu contraseña?"
-                android:textColor="#6C63FF" />
-
-
+                android:textColor="#6E7781" />
         </LinearLayout>
-    </ScrollView>
-
-</LinearLayout>
+    </LinearLayout>
+</ScrollView>
