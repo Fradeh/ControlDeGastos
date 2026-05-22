@@ -13,3 +13,5 @@
 .externalNativeBuild
 .cxx
 local.properties
+.vscode/
+functions/node_modules/

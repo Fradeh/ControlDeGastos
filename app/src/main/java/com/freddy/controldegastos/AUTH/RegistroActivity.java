@@ -79,11 +79,10 @@ public class RegistroActivity extends AppCompatActivity {
                             Map<String, Object> datosUsuario = new HashMap<>();
                             datosUsuario.put("nombre", nombre);
                             datosUsuario.put("correo", correo);
-                            datosUsuario.put("esPremium", false);
 
                             FirebaseDatabase.getInstance().getReference("usuarios")
                                     .child(uid)
-                                    .setValue(datosUsuario);
+                                    .updateChildren(datosUsuario);
 
                             Toast.makeText(this, "Registro exitoso", Toast.LENGTH_SHORT).show();
 

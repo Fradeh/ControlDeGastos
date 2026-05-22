@@ -1,0 +1,24 @@
+{
+  "rules": {
+    "usuarios": {
+      "$uid": {
+        ".read": "$uid === auth.uid",
+        "esPremium": {
+          ".write": false
+        },
+        "fechaPremium": {
+          ".write": false
+        },
+        "$other": {
+          ".write": "$uid === auth.uid && $other !== 'esPremium' && $other !== 'fechaPremium'"
+        }
+      }
+    },
+    "_backups": {
+      "$uid": {
+        ".read": "$uid === auth.uid",
+        ".write": "$uid === auth.uid"
+      }
+    }
+  }
+}

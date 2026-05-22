@@ -17,12 +17,12 @@ import com.android.billingclient.api.ProductDetails;
 import com.android.billingclient.api.Purchase;
 import com.android.billingclient.api.QueryProductDetailsParams;
 import com.android.billingclient.api.QueryPurchasesParams;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.functions.FirebaseFunctions;
 
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class BillingManager {
 
@@ -76,17 +76,21 @@ public class BillingManager {
                 .build();
 
         billingClient.queryPurchasesAsync(params, (result, purchasesList) -> {
-            boolean esPremium = false;
             for (Purchase purchase : purchasesList) {
                 if (esCompraPremiumActiva(purchase)) {
-                    esPremium = true;
-                    guardarPremiumConfirmadoEnFirebase();
-                    break;
+                    validarCompraPremiumEnBackend(purchase, () -> {
+                        reconocerCompraSiHaceFalta(purchase);
+                        if (!yaRespondio && callback != null) {
+                            callback.onResult(true);
+                            yaRespondio = true;
+                        }
+                    });
+                    return;
                 }
             }
 
             if (!yaRespondio && callback != null) {
-                callback.onResult(esPremium);
+                callback.onResult(false);
                 yaRespondio = true;
             }
         });
@@ -115,20 +119,21 @@ public class BillingManager {
         if (billingResult.getResponseCode() == BillingClient.BillingResponseCode.OK && purchases != null) {
             for (Purchase purchase : purchases) {
                 if (esCompraPremiumActiva(purchase)) {
-                    guardarPremiumConfirmadoEnFirebase();
-                    if (callback != null) {
-                        callback.onResult(true);
-                    }
+                    validarCompraPremiumEnBackend(purchase, () -> {
+                        if (callback != null) {
+                            callback.onResult(true);
+                        }
 
-                    if (activityRef != null) {
-                        activityRef.runOnUiThread(() -> Toast.makeText(
-                                activityRef,
-                                "Compra registrada. Tu estado Premium se validara de forma segura.",
-                                Toast.LENGTH_LONG
-                        ).show());
-                    }
+                        if (activityRef != null) {
+                            activityRef.runOnUiThread(() -> Toast.makeText(
+                                    activityRef,
+                                    "Compra validada. Ya tienes Premium activo.",
+                                    Toast.LENGTH_LONG
+                            ).show());
+                        }
 
-                    reconocerCompraSiHaceFalta(purchase);
+                        reconocerCompraSiHaceFalta(purchase);
+                    });
                 }
             }
         }
@@ -139,18 +144,29 @@ public class BillingManager {
                 && purchase.getPurchaseState() == Purchase.PurchaseState.PURCHASED;
     }
 
-    private void guardarPremiumConfirmadoEnFirebase() {
-        FirebaseUser usuario = FirebaseAuth.getInstance().getCurrentUser();
-        if (usuario == null) {
-            return;
-        }
+    private void validarCompraPremiumEnBackend(Purchase purchase, Runnable onValidated) {
+        Map<String, Object> data = new HashMap<>();
+        data.put("productId", ID_PRODUCTO);
+        data.put("purchaseToken", purchase.getPurchaseToken());
 
-        FirebaseDatabase.getInstance()
-                .getReference("usuarios")
-                .child(usuario.getUid())
-                .child("esPremium")
-                .setValue(true)
-                .addOnFailureListener(e -> Log.w("BillingManager", "No se pudo sincronizar Premium.", e));
+        FirebaseFunctions.getInstance()
+                .getHttpsCallable("validatePremiumPurchase")
+                .call(data)
+                .addOnSuccessListener(result -> {
+                    if (onValidated != null) {
+                        onValidated.run();
+                    }
+                })
+                .addOnFailureListener(e -> {
+                    Log.w("BillingManager", "No se pudo validar la compra Premium.", e);
+                    if (activityRef != null) {
+                        activityRef.runOnUiThread(() -> Toast.makeText(
+                                activityRef,
+                                "No se pudo validar la compra. Intenta nuevamente en unos segundos.",
+                                Toast.LENGTH_LONG
+                        ).show());
+                    }
+                });
     }
 
     private void reconocerCompraSiHaceFalta(Purchase purchase) {

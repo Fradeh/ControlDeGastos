@@ -45,6 +45,7 @@ dependencies {
     implementation(platform("com.google.firebase:firebase-bom:34.0.0"))
     implementation("com.google.firebase:firebase-auth")
     implementation("com.google.firebase:firebase-database")
+    implementation("com.google.firebase:firebase-functions")
     implementation("com.google.firebase:firebase-storage")
 
     implementation("com.github.PhilJay:MPAndroidChart:v3.1.0")
