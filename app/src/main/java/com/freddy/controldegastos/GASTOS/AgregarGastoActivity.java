@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
@@ -23,6 +24,7 @@ public class AgregarGastoActivity extends AppCompatActivity {
 
     private EditText edtDescripcion, edtMonto, edtFecha;
     private Spinner spinnerCategoria;
+    private LinearLayout contenedorCategoria;
     private Button btnGuardarGasto, btnCancelar;
     private TextView txtTituloGasto;
 
@@ -40,6 +42,7 @@ public class AgregarGastoActivity extends AppCompatActivity {
         edtMonto = findViewById(R.id.edtMonto);
         edtFecha = findViewById(R.id.edtFecha);
         spinnerCategoria = findViewById(R.id.spinnerCategoria);
+        contenedorCategoria = findViewById(R.id.contenedorCategoria);
         btnGuardarGasto = findViewById(R.id.btnGuardarGasto);
         btnCancelar = findViewById(R.id.btnCancelar);
         txtTituloGasto = findViewById(R.id.txtTituloGasto);
@@ -112,11 +115,11 @@ public class AgregarGastoActivity extends AppCompatActivity {
         if (modoIngreso) {
             setTitle(modoEdicion ? "Editar Ingreso" : "Nuevo Ingreso");
             txtTituloGasto.setText(modoEdicion ? "Editar Ingreso" : "Nuevo Ingreso");
-            spinnerCategoria.setVisibility(View.GONE);
+            contenedorCategoria.setVisibility(View.GONE);
         } else {
             setTitle(modoEdicion ? "Editar Gasto" : "Nuevo Gasto");
             txtTituloGasto.setText(modoEdicion ? "Editar Gasto" : "Nuevo Gasto");
-            spinnerCategoria.setVisibility(View.VISIBLE);
+            contenedorCategoria.setVisibility(View.VISIBLE);
         }
     }
 
