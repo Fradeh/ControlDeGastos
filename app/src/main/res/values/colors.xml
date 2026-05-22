@@ -2,4 +2,6 @@
 <resources>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+    <color name="fixed_paid_text">#2E7D32</color>
+    <color name="fixed_pending_text">#9A6B00</color>
 </resources>

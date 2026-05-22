@@ -1,12 +1,16 @@
 package com.freddy.controldegastos.GastosFijos;
 
 import android.os.Bundle;
+import android.graphics.Color;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.view.WindowCompat;
+import androidx.core.view.WindowInsetsControllerCompat;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import android.widget.EditText;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import android.content.SharedPreferences;
 import android.app.AlertDialog;
@@ -25,10 +29,11 @@ public class GastosFijosActivity extends AppCompatActivity {
     private RecyclerView recyclerViewFijos;
     private List<GastoFijo> listaGastosFijos;
     private GastoFijoAdapterRecycler gastoFijoAdapter;
-    private TextView txtSaldoFijos;
+    private TextView txtSaldoFijos, txtTotalFijos, txtPendienteFijos;
     private SharedPreferences prefs;
     private EditText edtNombreFijo, edtMontoFijo;
-    private Button btnAgregarFijo, btnAtras;
+    private Button btnAgregarFijo;
+    private ImageButton btnAtras;
     private GastoFijoDao gastoFijoDao;
 
     private void actualizarSaldoFijos() {
@@ -38,13 +43,18 @@ public class GastosFijosActivity extends AppCompatActivity {
         double totalGastosNormales = gastoDao.sumaGastos();   // solo gastos
         double ingresosExtra = gastoDao.sumaIngresos();       // solo ingresos
 
+        double totalFijos = 0;
         double totalFijosPagados = 0;
         for (GastoFijo g : listaGastosFijos) {
+            totalFijos += g.getMonto();
             if (g.isPagado()) totalFijosPagados += g.getMonto();
         }
 
+        double pendiente = totalFijos - totalFijosPagados;
         double saldo = ingresoMensual + ingresosExtra - (totalGastosNormales + totalFijosPagados);
-        txtSaldoFijos.setText("Saldo disponible: $" + String.format(Locale.getDefault(),"%.2f", saldo));
+        txtSaldoFijos.setText("Saldo disponible: $" + String.format(Locale.getDefault(), "%.2f", saldo));
+        txtTotalFijos.setText("Total fijo\n$" + String.format(Locale.getDefault(), "%.2f", totalFijos));
+        txtPendienteFijos.setText("Pendiente\n$" + String.format(Locale.getDefault(), "%.2f", pendiente));
     }
 
 
@@ -52,9 +62,15 @@ public class GastosFijosActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        WindowCompat.setDecorFitsSystemWindows(getWindow(), true);
         setContentView(R.layout.activity_gastos_fijos);
+        getWindow().setStatusBarColor(Color.parseColor("#FFFDF7"));
+        new WindowInsetsControllerCompat(getWindow(), getWindow().getDecorView())
+                .setAppearanceLightStatusBars(true);
 
         txtSaldoFijos = findViewById(R.id.txtSaldoFijos);
+        txtTotalFijos = findViewById(R.id.txtTotalFijos);
+        txtPendienteFijos = findViewById(R.id.txtPendienteFijos);
         prefs = getSharedPreferences("mis_datos", MODE_PRIVATE);
 
         recyclerViewFijos = findViewById(R.id.recyclerViewFijos);

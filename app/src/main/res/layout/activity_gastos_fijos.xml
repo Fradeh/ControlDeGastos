@@ -1,88 +1,210 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:background="#F9FAFC"
-    android:padding="16dp">
+    android:background="#FFFDF7"
+    android:orientation="vertical">
 
-    <!-- Botón Atrás -->
-    <Button
-        android:id="@+id/btnAtras"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="start"
-        android:layout_marginBottom="8dp"
-        android:backgroundTint="#eeeeee"
-        android:text="← Atrás"
-        android:textAllCaps="false"
-        android:textColor="#1976D2" />
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="24dp"
+        android:background="#FFFDF7" />
 
-    <TextView
-        android:id="@+id/textTituloFijos"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Gastos Fijos"
-        android:textSize="24sp"
-        android:textStyle="bold"
-        android:gravity="center"
-        android:textColor="#222"
-        android:layout_marginBottom="12dp"/>
+        android:orientation="vertical"
+        android:paddingStart="18dp"
+        android:paddingTop="14dp"
+        android:paddingEnd="18dp"
+        android:paddingBottom="12dp">
 
-    <!-- Cambiado a RecyclerView -->
+        <ImageButton
+            android:id="@+id/btnAtras"
+            android:layout_width="44dp"
+            android:layout_height="44dp"
+            android:background="@drawable/bg_back_button"
+            android:clickable="true"
+            android:contentDescription="Atrás"
+            android:focusable="true"
+            android:padding="9dp"
+            android:scaleType="centerInside"
+            android:src="@drawable/ic_back_custom" />
+
+        <TextView
+            android:id="@+id/textTituloFijos"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="14dp"
+            android:gravity="center"
+            android:text="Gastos fijos"
+            android:textColor="#263746"
+            android:textSize="24sp"
+            android:textStyle="bold" />
+
+        <View
+            android:layout_width="42dp"
+            android:layout_height="4dp"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="8dp"
+            android:background="@drawable/bg_fixed_title_accent" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:gravity="center"
+            android:text="Marca lo que ya pagaste este mes"
+            android:textColor="#6B6A63"
+            android:textSize="14sp" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="18dp"
+            android:background="@drawable/bg_fixed_summary_card"
+            android:elevation="3dp"
+            android:orientation="vertical"
+            android:paddingStart="14dp"
+            android:paddingTop="12dp"
+            android:paddingEnd="14dp"
+            android:paddingBottom="12dp">
+
+            <TextView
+                android:id="@+id/txtSaldoFijos"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="Saldo disponible: $0.00"
+                android:textColor="#2E7D32"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:gravity="center"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/txtTotalFijos"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="Total fijo\n$0.00"
+                    android:textColor="#263746"
+                    android:textSize="13sp" />
+
+                <View
+                    android:layout_width="1dp"
+                    android:layout_height="34dp"
+                    android:background="#E5DED3" />
+
+                <TextView
+                    android:id="@+id/txtPendienteFijos"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="Pendiente\n$0.00"
+                    android:textColor="#C62828"
+                    android:textSize="13sp"
+                    android:textStyle="bold" />
+            </LinearLayout>
+        </LinearLayout>
+    </LinearLayout>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingStart="20dp"
+        android:paddingEnd="20dp"
+        android:text="Pagos recurrentes"
+        android:textColor="#263746"
+        android:textSize="15sp"
+        android:textStyle="bold" />
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerViewFijos"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
-        android:background="@android:color/white"
-        android:layout_marginBottom="8dp"/>
+        android:clipToPadding="false"
+        android:paddingStart="10dp"
+        android:paddingTop="8dp"
+        android:paddingEnd="10dp"
+        android:paddingBottom="8dp"
+        android:scrollbars="vertical" />
 
-    <!-- SALDO -->
-    <TextView
-        android:id="@+id/txtSaldoFijos"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Saldo disponible: $0.00"
-        android:textSize="18sp"
-        android:textColor="#388E3C"
-        android:gravity="center"
-        android:layout_marginBottom="12dp"/>
-
-    <!-- Agregar nuevo gasto fijo -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:gravity="center_vertical"
-        android:layout_marginBottom="8dp">
+        android:background="#FFFDF7"
+        android:orientation="vertical"
+        android:paddingStart="16dp"
+        android:paddingTop="6dp"
+        android:paddingEnd="16dp"
+        android:paddingBottom="28dp">
 
-        <EditText
-            android:id="@+id/edtNombreFijo"
-            android:layout_width="0dp"
-            android:layout_weight="2"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Nombre (ej: Luz)"
-            android:inputType="text"/>
+            android:background="@drawable/bg_fixed_input_card"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:paddingStart="12dp"
+            android:paddingTop="10dp"
+            android:paddingEnd="10dp"
+            android:paddingBottom="10dp">
 
-        <EditText
-            android:id="@+id/edtMontoFijo"
-            android:layout_width="0dp"
-            android:layout_weight="1"
-            android:layout_height="wrap_content"
-            android:hint="Monto"
-            android:inputType="numberDecimal"
-            android:layout_marginStart="8dp"/>
+            <EditText
+                android:id="@+id/edtNombreFijo"
+                android:layout_width="0dp"
+                android:layout_height="44dp"
+                android:layout_weight="1.35"
+                android:background="@drawable/bg_fixed_edit_text"
+                android:hint="Ej: Luz"
+                android:inputType="text"
+                android:paddingStart="12dp"
+                android:paddingEnd="10dp"
+                android:singleLine="true"
+                android:textColor="#263746"
+                android:textColorHint="#9A958C"
+                android:textSize="14sp" />
 
-        <Button
-            android:id="@+id/btnAgregarFijo"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Agregar"
-            android:layout_marginStart="8dp"
-            android:backgroundTint="#1976D2"
-            android:textColor="@android:color/white"/>
+            <EditText
+                android:id="@+id/edtMontoFijo"
+                android:layout_width="0dp"
+                android:layout_height="44dp"
+                android:layout_marginStart="8dp"
+                android:layout_weight="0.85"
+                android:background="@drawable/bg_fixed_edit_text"
+                android:hint="Ej: 80.00"
+                android:inputType="numberDecimal"
+                android:paddingStart="12dp"
+                android:paddingEnd="10dp"
+                android:singleLine="true"
+                android:textColor="#263746"
+                android:textColorHint="#9A958C"
+                android:textSize="14sp" />
 
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/btnAgregarFijo"
+                android:layout_width="108dp"
+                android:layout_height="44dp"
+                android:layout_marginStart="8dp"
+                android:background="@drawable/bg_button_primary"
+                android:minWidth="0dp"
+                android:minHeight="0dp"
+                android:text="Agregar"
+                android:textAllCaps="false"
+                android:textColor="@android:color/white"
+                android:textSize="13sp"
+                android:textStyle="bold"
+                app:backgroundTint="@null" />
+        </LinearLayout>
     </LinearLayout>
 </LinearLayout>

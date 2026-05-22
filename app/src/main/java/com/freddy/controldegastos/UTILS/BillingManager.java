@@ -8,14 +8,18 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 
-import com.android.billingclient.api.*;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
+import com.android.billingclient.api.AcknowledgePurchaseParams;
+import com.android.billingclient.api.BillingClient;
+import com.android.billingclient.api.BillingClientStateListener;
+import com.android.billingclient.api.BillingFlowParams;
+import com.android.billingclient.api.BillingResult;
+import com.android.billingclient.api.ProductDetails;
+import com.android.billingclient.api.Purchase;
+import com.android.billingclient.api.QueryProductDetailsParams;
+import com.android.billingclient.api.QueryPurchasesParams;
 
-import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.Collections;
+import java.util.List;
 
 public class BillingManager {
 
@@ -27,20 +31,21 @@ public class BillingManager {
     private BillingClient billingClient;
     private ProductDetails premiumProductDetails;
     private boolean yaRespondio = false;
-    private Activity activityRef; // referencia para mostrar Toast
+    private final Activity activityRef;
+    private final PremiumStatusCallback callback;
 
     public BillingManager(Activity activity, PremiumStatusCallback callback) {
-        this.activityRef = activity; // guardar referencia
+        this.activityRef = activity;
+        this.callback = callback;
 
         billingClient = BillingClient.newBuilder(activity)
                 .enablePendingPurchases()
                 .setListener(this::handlePurchaseUpdate)
                 .build();
 
-        // ⏳ Timeout de seguridad
         new Handler(Looper.getMainLooper()).postDelayed(() -> {
             if (!yaRespondio && callback != null) {
-                Log.w("BillingManager", "⏰ Timeout alcanzado. Continuando sin Billing.");
+                Log.w("BillingManager", "Timeout alcanzado. Continuando sin Billing.");
                 callback.onResult(false);
                 yaRespondio = true;
             }
@@ -50,44 +55,8 @@ public class BillingManager {
             @Override
             public void onBillingSetupFinished(@NonNull BillingResult billingResult) {
                 if (billingResult.getResponseCode() == BillingClient.BillingResponseCode.OK) {
-                    // Verificar si ya se compró
-                    QueryPurchasesParams params = QueryPurchasesParams.newBuilder()
-                            .setProductType(BillingClient.ProductType.INAPP)
-                            .build();
-
-                    billingClient.queryPurchasesAsync(params, (result, purchasesList) -> {
-                        boolean esPremium = false;
-                        for (Purchase purchase : purchasesList) {
-                            if (purchase.getProducts().contains(ID_PRODUCTO)
-                                    && purchase.getPurchaseState() == Purchase.PurchaseState.PURCHASED) {
-                                esPremium = true;
-                                break;
-                            }
-                        }
-
-                        if (!yaRespondio && callback != null) {
-                            callback.onResult(esPremium);
-                            yaRespondio = true;
-                        }
-                    });
-
-                    // Obtener detalles del producto
-                    QueryProductDetailsParams.Product product =
-                            QueryProductDetailsParams.Product.newBuilder()
-                                    .setProductId(ID_PRODUCTO)
-                                    .setProductType(BillingClient.ProductType.INAPP)
-                                    .build();
-
-                    QueryProductDetailsParams queryParams =
-                            QueryProductDetailsParams.newBuilder()
-                                    .setProductList(Collections.singletonList(product))
-                                    .build();
-
-                    billingClient.queryProductDetailsAsync(queryParams, (billingResult1, productDetailsList) -> {
-                        if (!productDetailsList.isEmpty()) {
-                            premiumProductDetails = productDetailsList.get(0);
-                        }
-                    });
+                    consultarComprasExistentes();
+                    consultarProductoPremium();
                 }
             }
 
@@ -98,51 +67,85 @@ public class BillingManager {
         });
     }
 
-    private void handlePurchaseUpdate(@NonNull BillingResult billingResult, @NonNull List<Purchase> purchases) {
+    private void consultarComprasExistentes() {
+        QueryPurchasesParams params = QueryPurchasesParams.newBuilder()
+                .setProductType(BillingClient.ProductType.INAPP)
+                .build();
+
+        billingClient.queryPurchasesAsync(params, (result, purchasesList) -> {
+            boolean esPremium = false;
+            for (Purchase purchase : purchasesList) {
+                if (esCompraPremiumActiva(purchase)) {
+                    esPremium = true;
+                    break;
+                }
+            }
+
+            if (!yaRespondio && callback != null) {
+                callback.onResult(esPremium);
+                yaRespondio = true;
+            }
+        });
+    }
+
+    private void consultarProductoPremium() {
+        QueryProductDetailsParams.Product product =
+                QueryProductDetailsParams.Product.newBuilder()
+                        .setProductId(ID_PRODUCTO)
+                        .setProductType(BillingClient.ProductType.INAPP)
+                        .build();
+
+        QueryProductDetailsParams queryParams =
+                QueryProductDetailsParams.newBuilder()
+                        .setProductList(Collections.singletonList(product))
+                        .build();
+
+        billingClient.queryProductDetailsAsync(queryParams, (billingResult, productDetailsList) -> {
+            if (!productDetailsList.isEmpty()) {
+                premiumProductDetails = productDetailsList.get(0);
+            }
+        });
+    }
+
+    private void handlePurchaseUpdate(@NonNull BillingResult billingResult, List<Purchase> purchases) {
         if (billingResult.getResponseCode() == BillingClient.BillingResponseCode.OK && purchases != null) {
             for (Purchase purchase : purchases) {
-                if (purchase.getProducts().contains(ID_PRODUCTO)
-                        && purchase.getPurchaseState() == Purchase.PurchaseState.PURCHASED) {
-
-                    // Guardar en Firebase
-                    FirebaseUser usuario = FirebaseAuth.getInstance().getCurrentUser();
-                    if (usuario != null) {
-                        String uid = usuario.getUid();
-                        DatabaseReference ref = FirebaseDatabase.getInstance()
-                                .getReference("usuarios")
-                                .child(uid);
-
-                        Map<String, Object> datos = new HashMap<>();
-                        datos.put("esPremium", true);
-                        datos.put("fechaPremium", new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date()));
-
-                        ref.updateChildren(datos);
+                if (esCompraPremiumActiva(purchase)) {
+                    if (callback != null) {
+                        callback.onResult(true);
                     }
 
-                    // Mensaje para el usuario
                     if (activityRef != null) {
                         activityRef.runOnUiThread(() -> Toast.makeText(
                                 activityRef,
-                                "Compra realizada con éxito. Reinicia la app para activar Premium.",
+                                "Compra registrada. Tu estado Premium se validara de forma segura.",
                                 Toast.LENGTH_LONG
                         ).show());
                     }
 
-                    // Aceptar compra
-                    if (!purchase.isAcknowledged()) {
-                        AcknowledgePurchaseParams acknowledgeParams =
-                                AcknowledgePurchaseParams.newBuilder()
-                                        .setPurchaseToken(purchase.getPurchaseToken())
-                                        .build();
-
-                        billingClient.acknowledgePurchase(acknowledgeParams, billingResult1 -> {
-                            if (billingResult1.getResponseCode() == BillingClient.BillingResponseCode.OK) {
-                                Log.d("BillingManager", "Compra reconocida correctamente.");
-                            }
-                        });
-                    }
+                    reconocerCompraSiHaceFalta(purchase);
                 }
             }
+        }
+    }
+
+    private boolean esCompraPremiumActiva(Purchase purchase) {
+        return purchase.getProducts().contains(ID_PRODUCTO)
+                && purchase.getPurchaseState() == Purchase.PurchaseState.PURCHASED;
+    }
+
+    private void reconocerCompraSiHaceFalta(Purchase purchase) {
+        if (!purchase.isAcknowledged()) {
+            AcknowledgePurchaseParams acknowledgeParams =
+                    AcknowledgePurchaseParams.newBuilder()
+                            .setPurchaseToken(purchase.getPurchaseToken())
+                            .build();
+
+            billingClient.acknowledgePurchase(acknowledgeParams, billingResult -> {
+                if (billingResult.getResponseCode() == BillingClient.BillingResponseCode.OK) {
+                    Log.d("BillingManager", "Compra reconocida correctamente.");
+                }
+            });
         }
     }
 
@@ -159,7 +162,7 @@ public class BillingManager {
 
             billingClient.launchBillingFlow(activity, billingFlowParams);
         } else {
-            Log.e("BillingManager", "⚠️ Producto premium no cargado aún.");
+            Log.e("BillingManager", "Producto premium no cargado aun.");
         }
     }
 }

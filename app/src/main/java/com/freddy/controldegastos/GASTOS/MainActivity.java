@@ -130,9 +130,11 @@ public class MainActivity extends AppCompatActivity {
         esPremium = prefs.getBoolean("es_premium", false);
 
         billingManager = new BillingManager(this, isUserPremium -> {
-            esPremium = isUserPremium;
-            prefs.edit().putBoolean("es_premium", esPremium).apply();
-            if (premiumResuelto) aplicarUIporPremium();
+            if (isUserPremium) {
+                esPremium = true;
+                prefs.edit().putBoolean("es_premium", true).apply();
+                if (premiumResuelto) aplicarUIporPremium();
+            }
         });
 
         toolbar = findViewById(R.id.toolbar);
