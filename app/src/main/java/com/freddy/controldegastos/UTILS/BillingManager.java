@@ -17,6 +17,9 @@ import com.android.billingclient.api.ProductDetails;
 import com.android.billingclient.api.Purchase;
 import com.android.billingclient.api.QueryProductDetailsParams;
 import com.android.billingclient.api.QueryPurchasesParams;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.Collections;
 import java.util.List;
@@ -77,6 +80,7 @@ public class BillingManager {
             for (Purchase purchase : purchasesList) {
                 if (esCompraPremiumActiva(purchase)) {
                     esPremium = true;
+                    guardarPremiumConfirmadoEnFirebase();
                     break;
                 }
             }
@@ -111,6 +115,7 @@ public class BillingManager {
         if (billingResult.getResponseCode() == BillingClient.BillingResponseCode.OK && purchases != null) {
             for (Purchase purchase : purchases) {
                 if (esCompraPremiumActiva(purchase)) {
+                    guardarPremiumConfirmadoEnFirebase();
                     if (callback != null) {
                         callback.onResult(true);
                     }
@@ -132,6 +137,20 @@ public class BillingManager {
     private boolean esCompraPremiumActiva(Purchase purchase) {
         return purchase.getProducts().contains(ID_PRODUCTO)
                 && purchase.getPurchaseState() == Purchase.PurchaseState.PURCHASED;
+    }
+
+    private void guardarPremiumConfirmadoEnFirebase() {
+        FirebaseUser usuario = FirebaseAuth.getInstance().getCurrentUser();
+        if (usuario == null) {
+            return;
+        }
+
+        FirebaseDatabase.getInstance()
+                .getReference("usuarios")
+                .child(usuario.getUid())
+                .child("esPremium")
+                .setValue(true)
+                .addOnFailureListener(e -> Log.w("BillingManager", "No se pudo sincronizar Premium.", e));
     }
 
     private void reconocerCompraSiHaceFalta(Purchase purchase) {

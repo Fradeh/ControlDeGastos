@@ -1,5 +1,6 @@
 package com.freddy.controldegastos.GASTOS;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
@@ -7,6 +8,7 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.freddy.controldegastos.AUTH.LoginActivity;
 import com.freddy.controldegastos.BD.AppDatabase;
 import com.freddy.controldegastos.BD.GastoDao;
 import com.freddy.controldegastos.BD.GastoFijoDao;
@@ -14,6 +16,7 @@ import com.freddy.controldegastos.GastosFijos.GastoFijo;
 import com.freddy.controldegastos.R;
 import com.freddy.controldegastos.UTILS.GraficasUtils;
 import com.github.mikephil.charting.charts.PieChart;
+import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.List;
 import java.util.concurrent.ExecutorService;
@@ -31,6 +34,13 @@ public class GraficasActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_graficas);
+
+        if (FirebaseAuth.getInstance().getCurrentUser() == null) {
+            startActivity(new Intent(this, LoginActivity.class)
+                    .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK));
+            finish();
+            return;
+        }
 
         pieChart       = findViewById(R.id.pieChartCategorias);
         categoryRankingList = findViewById(R.id.categoryRankingList);

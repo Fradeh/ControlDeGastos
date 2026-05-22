@@ -26,6 +26,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class BackupHelper {
@@ -99,6 +100,34 @@ public class BackupHelper {
         backupRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if (!snapshot.exists()
+                        || (!snapshot.child("gastos").exists() && !snapshot.child("gastos_fijos").exists())) {
+                    Toast.makeText(context, "No hay backup disponible para restaurar", Toast.LENGTH_LONG).show();
+                    return;
+                }
+
+                List<Gasto> gastosRestaurados = new ArrayList<>();
+                List<GastoFijo> fijosRestaurados = new ArrayList<>();
+
+                for (DataSnapshot gastoSnap : snapshot.child("gastos").getChildren()) {
+                    Gasto gasto = gastoSnap.getValue(Gasto.class);
+                    if (gasto != null) {
+                        gastosRestaurados.add(gasto);
+                    }
+                }
+
+                for (DataSnapshot fijoSnap : snapshot.child("gastos_fijos").getChildren()) {
+                    GastoFijo fijo = fijoSnap.getValue(GastoFijo.class);
+                    if (fijo != null) {
+                        fijosRestaurados.add(fijo);
+                    }
+                }
+
+                if (gastosRestaurados.isEmpty() && fijosRestaurados.isEmpty()) {
+                    Toast.makeText(context, "El backup está vacío. No se modificaron tus datos.", Toast.LENGTH_LONG).show();
+                    return;
+                }
+
                 AppDatabase db = AppDatabase.obtenerInstancia(context);
                 GastoDao gastoDao = db.gastoDao();
                 GastoFijoDao gastoFijoDao = db.gastoFijoDao();
@@ -106,23 +135,12 @@ public class BackupHelper {
                 gastoDao.eliminarTodos();
                 gastoFijoDao.eliminarTodos();
 
-                int countGastos = 0;
-                int countFijos = 0;
-
-                for (DataSnapshot gastoSnap : snapshot.child("gastos").getChildren()) {
-                    Gasto gasto = gastoSnap.getValue(Gasto.class);
-                    if (gasto != null) {
-                        gastoDao.insertar(gasto);
-                        countGastos++;
-                    }
+                for (Gasto gasto : gastosRestaurados) {
+                    gastoDao.insertar(gasto);
                 }
 
-                for (DataSnapshot fijoSnap : snapshot.child("gastos_fijos").getChildren()) {
-                    GastoFijo fijo = fijoSnap.getValue(GastoFijo.class);
-                    if (fijo != null) {
-                        gastoFijoDao.insertar(fijo);
-                        countFijos++;
-                    }
+                for (GastoFijo fijo : fijosRestaurados) {
+                    gastoFijoDao.insertar(fijo);
                 }
 
                 listaGastos.clear();
@@ -137,7 +155,7 @@ public class BackupHelper {
                 Log.d("BACKUP", "Gastos recibidos: " + snapshot.child("gastos").getChildrenCount());
                 Log.d("BACKUP", "Fijos recibidos: " + snapshot.child("gastos_fijos").getChildrenCount());
 
-                Toast.makeText(context, "Backup restaurado: " + countGastos + " gastos y " + countFijos + " fijos", Toast.LENGTH_LONG).show();
+                Toast.makeText(context, "Backup restaurado: " + gastosRestaurados.size() + " gastos y " + fijosRestaurados.size() + " fijos", Toast.LENGTH_LONG).show();
             }
 
             @Override

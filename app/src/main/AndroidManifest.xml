@@ -1,6 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    package="com.freddy.controldegastos">
+    xmlns:tools="http://schemas.android.com/tools">
 
     <!-- ✅ PERMISOS -->
     <uses-permission android:name="android.permission.INTERNET" />
@@ -8,18 +7,11 @@
     <uses-permission android:name="com.android.vending.BILLING" />
 
     <!-- ⚠️ RESTRINGIDO por versiones más nuevas de Android -->
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"
-        android:maxSdkVersion="28" />
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"
-        android:maxSdkVersion="32" />
     <uses-permission android:name="com.google.android.gms.permission.AD_ID" />
-    <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
 
     <application
         android:name=".UTILS.MyApp"
-        android:allowBackup="true"
-        android:dataExtractionRules="@xml/data_extraction_rules"
-        android:fullBackupContent="@xml/backup_rules"
+        android:allowBackup="false"
         android:icon="@mipmap/ic_launcher"
         android:label="Control de Gastos"
         android:roundIcon="@mipmap/ic_launcher_round"
@@ -41,19 +33,19 @@
             android:screenOrientation="portrait" />
 
         <activity android:name=".AUTH.RegistroActivity"
-            android:exported="true"
+            android:exported="false"
             android:screenOrientation="portrait" />
 
         <activity android:name=".AUTH.LoginActivity"
-            android:exported="true"
+            android:exported="false"
             android:screenOrientation="portrait" />
 
         <activity android:name=".GASTOS.MainActivity"
-            android:exported="true"
+            android:exported="false"
             android:screenOrientation="portrait" />
 
         <activity android:name=".GASTOS.GraficasActivity"
-            android:exported="true"
+            android:exported="false"
             android:screenOrientation="portrait" />
 
         <activity

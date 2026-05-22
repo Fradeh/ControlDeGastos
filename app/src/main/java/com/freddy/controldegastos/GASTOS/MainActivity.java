@@ -120,6 +120,11 @@ public class MainActivity extends AppCompatActivity {
                 new WindowInsetsControllerCompat(getWindow(), getWindow().getDecorView());
         insetsController.setAppearanceLightStatusBars(true);
 
+        if (FirebaseAuth.getInstance().getCurrentUser() == null) {
+            volverAlLogin();
+            return;
+        }
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             if (checkSelfPermission(android.Manifest.permission.POST_NOTIFICATIONS)
                     != PackageManager.PERMISSION_GRANTED) {
@@ -162,7 +167,7 @@ public class MainActivity extends AppCompatActivity {
             String versionName = getPackageManager().getPackageInfo(getPackageName(), 0).versionName;
             if (tvVersion != null) tvVersion.setText("Versión " + versionName);
         } catch (PackageManager.NameNotFoundException e) {
-            e.printStackTrace();
+            if (tvVersion != null) tvVersion.setText("");
         }
 
         FirebaseUser usuario = FirebaseAuth.getInstance().getCurrentUser();
@@ -436,6 +441,12 @@ public class MainActivity extends AppCompatActivity {
 
         actualizarResumen();
         refrescarPremium(); // ← clave
+    }
+
+    private void volverAlLogin() {
+        startActivity(new Intent(MainActivity.this, LoginActivity.class)
+                .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK));
+        finish();
     }
 
 

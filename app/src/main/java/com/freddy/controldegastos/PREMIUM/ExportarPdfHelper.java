@@ -175,7 +175,6 @@ public class ExportarPdfHelper {
             context.startActivity(intent);
 
         } catch (Exception e) {
-            e.printStackTrace();
             Toast.makeText(context, "Error al exportar PDF: " + e.getMessage(), Toast.LENGTH_SHORT).show();
         }
     }

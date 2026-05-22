@@ -22,3 +22,17 @@
 
 # ✅ Conservar clases del cliente de facturación de Google Play Billing
 -keep class com.android.billingclient.** { *; }
+
+# Modelos que Firebase Realtime Database serializa/deserializa por nombre.
+-keep class com.freddy.controldegastos.GASTOS.Gasto { *; }
+-keep class com.freddy.controldegastos.GastosFijos.GastoFijo { *; }
+-keep class com.freddy.controldegastos.UTILS.BackupHelper$BackupData { *; }
+
+# Evitar logs de depuración en release.
+-assumenosideeffects class android.util.Log {
+    public static int v(...);
+    public static int d(...);
+    public static int i(...);
+    public static int w(...);
+    public static int e(...);
+}
