@@ -175,7 +175,7 @@ public class MainActivity extends AppCompatActivity {
         navigationView.setNavigationItemSelectedListener(item -> {
             int id = item.getItemId();
             if (id == R.id.nav_manual_usuario) {
-                mostrarManualUsuario();
+                mostrarManualUsuarioRedisenado();
             } else if (id == R.id.nav_cerrar_sesion) {
                 FirebaseAuth.getInstance().signOut();
                 startActivity(new Intent(MainActivity.this, LoginActivity.class)
@@ -775,6 +775,22 @@ public class MainActivity extends AppCompatActivity {
                 cargarPerfilHeader(); // fallback
             }
         }
+    }
+
+    private void mostrarManualUsuarioRedisenado() {
+        View dialogView = getLayoutInflater().inflate(R.layout.dialog_manual_usuario, null);
+        AlertDialog dialog = new AlertDialog.Builder(this)
+                .setView(dialogView)
+                .create();
+
+        dialogView.findViewById(R.id.btnCerrarManualUsuario).setOnClickListener(v -> dialog.dismiss());
+
+        dialog.setOnShowListener(d -> {
+            if (dialog.getWindow() != null) {
+                dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+            }
+        });
+        dialog.show();
     }
 
     private void mostrarManualUsuario() {

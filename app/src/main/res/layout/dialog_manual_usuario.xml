@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:fillViewport="false">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/bg_expense_form_card"
+        android:orientation="vertical"
+        android:paddingStart="22dp"
+        android:paddingTop="22dp"
+        android:paddingEnd="22dp"
+        android:paddingBottom="20dp">
+
+        <ImageView
+            android:layout_width="54dp"
+            android:layout_height="54dp"
+            android:layout_gravity="center"
+            android:layout_marginBottom="8dp"
+            android:contentDescription="@string/app_name"
+            android:src="@drawable/logo" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="Guía rápida"
+            android:textColor="#27313F"
+            android:textSize="22sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="6dp"
+            android:layout_marginBottom="18dp"
+            android:gravity="center"
+            android:text="Lo esencial para registrar, revisar y cuidar tus gastos diarios."
+            android:textColor="#6E7781"
+            android:textSize="14sp" />
+
+        <TextView
+            style="@style/HelpManualSectionTitle"
+            android:text="Primeros pasos" />
+
+        <TextView
+            style="@style/HelpManualBody"
+            android:text="1. Guarda tu ingreso mensual para que el saldo tenga una base clara.\n2. Usa Agregar Gasto para registrar compras, pagos o movimientos del día.\n3. Si recibes dinero extra, agrégalo desde el menú lateral." />
+
+        <TextView
+            style="@style/HelpManualSectionTitle"
+            android:layout_marginTop="14dp"
+            android:text="Gastos y edición" />
+
+        <TextView
+            style="@style/HelpManualBody"
+            android:text="Toca un gasto para editarlo. Si necesitas eliminarlo, deslízalo en la lista principal. El resumen se actualiza automáticamente con cada cambio." />
+
+        <TextView
+            style="@style/HelpManualSectionTitle"
+            android:layout_marginTop="14dp"
+            android:text="Pagos recurrentes" />
+
+        <TextView
+            style="@style/HelpManualBody"
+            android:text="En Gastos fijos puedes llevar pagos como alquiler, luz, internet o suscripciones. Márcalos como pagados cuando correspondan para mantener tu saldo al día." />
+
+        <TextView
+            style="@style/HelpManualSectionTitle"
+            android:layout_marginTop="14dp"
+            android:text="Funciones Premium" />
+
+        <TextView
+            style="@style/HelpManualBody"
+            android:layout_marginBottom="20dp"
+            android:text="Premium desbloquea herramientas avanzadas como gráficas, exportación y respaldo, según las opciones disponibles en tu cuenta." />
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btnCerrarManualUsuario"
+            android:layout_width="match_parent"
+            android:layout_height="52dp"
+            android:background="@drawable/bg_expense_save_button"
+            android:text="Entendido"
+            android:textAllCaps="false"
+            android:textColor="@android:color/white"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            app:backgroundTint="@null" />
+    </LinearLayout>
+</ScrollView>
