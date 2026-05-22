@@ -2,7 +2,11 @@ package com.freddy.controldegastos.UTILS;
 
 import android.app.AlertDialog;
 import android.content.Context;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -13,20 +17,25 @@ import com.freddy.controldegastos.BD.GastoFijoDao;
 import com.freddy.controldegastos.GASTOS.Gasto;
 import com.freddy.controldegastos.GASTOS.GastoAdapterRecycler;
 import com.freddy.controldegastos.GastosFijos.GastoFijo;
+import com.freddy.controldegastos.R;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.*;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.List;
 
 public class BackupHelper {
 
-    // Modelo para subir todo en una sola llamada
     public static class BackupData {
         public List<Gasto> gastos;
-        public List<GastoFijo> gastos_fijos; // mismo nombre que usas en la restauración
+        public List<GastoFijo> gastos_fijos;
 
-        public BackupData() {} // requerido por Firebase
+        public BackupData() {}
+
         public BackupData(List<Gasto> gastos, List<GastoFijo> gastos_fijos) {
             this.gastos = gastos;
             this.gastos_fijos = gastos_fijos;
@@ -40,20 +49,15 @@ public class BackupHelper {
             return;
         }
 
-        String uid = usuario.getUid();
-
-
         DatabaseReference ref = FirebaseDatabase.getInstance()
                 .getReference("_backups")
-                .child(uid);
+                .child(usuario.getUid());
 
         AppDatabase db = AppDatabase.obtenerInstancia(context);
         List<Gasto> gastos = db.gastoDao().obtenerTodos();
         List<GastoFijo> gastosFijos = db.gastoFijoDao().obtenerTodos();
 
         BackupData data = new BackupData(gastos, gastosFijos);
-
-        // Escribir TODO en una sola operación
         ref.setValue(data)
                 .addOnSuccessListener(aVoid ->
                         Toast.makeText(context, "Backup guardado correctamente", Toast.LENGTH_SHORT).show())
@@ -62,12 +66,23 @@ public class BackupHelper {
     }
 
     public static void confirmarYRestaurarBackup(Context context, GastoAdapterRecycler adapter, List<Gasto> listaGastos, Runnable actualizarResumenCallback) {
-        new AlertDialog.Builder(context)
-                .setTitle("Restaurar Backup")
-                .setMessage("Esto reemplazará tus gastos actuales por el backup guardado en la nube. ¿Deseas continuar?")
-                .setPositiveButton("Sí", (dialog, which) -> restaurarBackup(context, adapter, listaGastos, actualizarResumenCallback))
-                .setNegativeButton("Cancelar", null)
-                .show();
+        View dialogView = LayoutInflater.from(context).inflate(R.layout.dialog_restaurar_backup, null);
+        AlertDialog dialog = new AlertDialog.Builder(context)
+                .setView(dialogView)
+                .create();
+
+        dialogView.findViewById(R.id.btnCancelarRestaurarBackup).setOnClickListener(v -> dialog.dismiss());
+        dialogView.findViewById(R.id.btnConfirmarRestaurarBackup).setOnClickListener(v -> {
+            dialog.dismiss();
+            restaurarBackup(context, adapter, listaGastos, actualizarResumenCallback);
+        });
+
+        dialog.setOnShowListener(d -> {
+            if (dialog.getWindow() != null) {
+                dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+            }
+        });
+        dialog.show();
     }
 
     public static void restaurarBackup(Context context, GastoAdapterRecycler adapter, List<Gasto> listaGastos, Runnable actualizarResumenCallback) {
@@ -77,7 +92,6 @@ public class BackupHelper {
             return;
         }
 
-        // Igual que en backup: apunta a _backups
         DatabaseReference backupRef = FirebaseDatabase.getInstance()
                 .getReference("_backups")
                 .child(usuario.getUid());
@@ -96,17 +110,17 @@ public class BackupHelper {
                 int countFijos = 0;
 
                 for (DataSnapshot gastoSnap : snapshot.child("gastos").getChildren()) {
-                    Gasto g = gastoSnap.getValue(Gasto.class);
-                    if (g != null) {
-                        gastoDao.insertar(g);
+                    Gasto gasto = gastoSnap.getValue(Gasto.class);
+                    if (gasto != null) {
+                        gastoDao.insertar(gasto);
                         countGastos++;
                     }
                 }
 
                 for (DataSnapshot fijoSnap : snapshot.child("gastos_fijos").getChildren()) {
-                    GastoFijo gf = fijoSnap.getValue(GastoFijo.class);
-                    if (gf != null) {
-                        gastoFijoDao.insertar(gf);
+                    GastoFijo fijo = fijoSnap.getValue(GastoFijo.class);
+                    if (fijo != null) {
+                        gastoFijoDao.insertar(fijo);
                         countFijos++;
                     }
                 }
