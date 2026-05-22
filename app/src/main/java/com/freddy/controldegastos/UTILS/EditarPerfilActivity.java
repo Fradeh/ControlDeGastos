@@ -6,6 +6,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -30,21 +31,21 @@ import java.util.UUID;
 
 public class EditarPerfilActivity extends AppCompatActivity {
 
-    private static final String TAG = "EditarPerfilActivity";
-
     private EditText edtNombre;
     private ImageView imgPerfil;
-    private Button btnSeleccionar, btnGuardar;
+    private Button btnSeleccionar, btnGuardar, btnQuitarFoto;
+    private ImageButton btnAtras;
 
     private Uri imageUri;
+    private boolean quitarFoto = false;
     private FirebaseUser usuario;
     private DatabaseReference usuariosRef;
 
-    // Photo picker sin permisos (GetContent)
     private final ActivityResultLauncher<String> pickImage =
             registerForActivityResult(new ActivityResultContracts.GetContent(), uri -> {
                 if (uri != null) {
                     imageUri = uri;
+                    quitarFoto = false;
                     Glide.with(this)
                             .load(imageUri)
                             .placeholder(R.drawable.ic_person)
@@ -62,7 +63,9 @@ public class EditarPerfilActivity extends AppCompatActivity {
         edtNombre = findViewById(R.id.edtNombre);
         imgPerfil = findViewById(R.id.imgPerfil);
         btnSeleccionar = findViewById(R.id.btnSeleccionarFoto);
+        btnQuitarFoto = findViewById(R.id.btnQuitarFoto);
         btnGuardar = findViewById(R.id.btnGuardarPerfil);
+        btnAtras = findViewById(R.id.btnAtrasEditarPerfil);
 
         usuario = FirebaseAuth.getInstance().getCurrentUser();
         if (usuario == null) {
@@ -70,17 +73,32 @@ public class EditarPerfilActivity extends AppCompatActivity {
             finish();
             return;
         }
+
         usuariosRef = FirebaseDatabase.getInstance()
                 .getReference("usuarios")
                 .child(usuario.getUid());
 
-        // Precarga nombre/foto actuales
-        usuariosRef.get().addOnSuccessListener(s -> {
-            Object n = s.child("nombre").getValue();
-            Object f = s.child("fotoPerfil").getValue();
-            if (n != null) edtNombre.setText(String.valueOf(n));
-            if (f != null) {
-                String fotoUrl = String.valueOf(f);
+        cargarPerfilActual();
+
+        btnAtras.setOnClickListener(v -> finish());
+        btnSeleccionar.setOnClickListener(v -> pickImage.launch("image/*"));
+        btnQuitarFoto.setOnClickListener(v -> {
+            imageUri = null;
+            quitarFoto = true;
+            imgPerfil.setImageResource(R.drawable.ic_person);
+            Toast.makeText(this, "La foto se quitará al guardar", Toast.LENGTH_SHORT).show();
+        });
+        btnGuardar.setOnClickListener(v -> guardarCambios());
+    }
+
+    private void cargarPerfilActual() {
+        usuariosRef.get().addOnSuccessListener(snapshot -> {
+            Object nombre = snapshot.child("nombre").getValue();
+            Object foto = snapshot.child("fotoPerfil").getValue();
+
+            if (nombre != null) edtNombre.setText(String.valueOf(nombre));
+            if (foto != null) {
+                String fotoUrl = String.valueOf(foto);
                 if (!fotoUrl.isEmpty()) {
                     Glide.with(this)
                             .load(fotoUrl)
@@ -91,17 +109,13 @@ public class EditarPerfilActivity extends AppCompatActivity {
                 }
             }
         });
-
-        btnSeleccionar.setOnClickListener(v -> pickImage.launch("image/*"));
-        btnGuardar.setOnClickListener(v -> guardarCambios());
     }
 
     private void guardarCambios() {
         String nuevoNombre = edtNombre.getText().toString().trim();
 
-        // Permitir: solo nombre, solo foto o ambos. No permitir ambos vacíos.
-        if (nuevoNombre.isEmpty() && imageUri == null) {
-            Toast.makeText(this, "Ingresa un nombre o selecciona una imagen", Toast.LENGTH_SHORT).show();
+        if (nuevoNombre.isEmpty() && imageUri == null && !quitarFoto) {
+            Toast.makeText(this, "Ingresa un nombre, selecciona una imagen o quita la foto", Toast.LENGTH_SHORT).show();
             return;
         }
 
@@ -114,30 +128,35 @@ public class EditarPerfilActivity extends AppCompatActivity {
         if (!nuevoNombre.isEmpty()) {
             updates.put("nombre", nuevoNombre);
         }
+        if (quitarFoto) {
+            updates.put("fotoPerfil", "");
+        }
 
         if (imageUri != null) {
-            // Sube a Storage en carpeta del usuario: perfiles/<uid>/<uuid>.jpg
-            String uid = usuario.getUid();
-            String filename = "perfiles/" + uid + "/" + UUID.randomUUID() + ".jpg";
-            StorageReference ref = FirebaseStorage.getInstance().getReference(filename);
-
-            StorageMetadata meta = new StorageMetadata.Builder()
-                    .setContentType("image/jpeg")
-                    .build();
-
-            ref.putFile(imageUri, meta)
-                    .addOnSuccessListener(t -> ref.getDownloadUrl().addOnSuccessListener(uri -> {
-                        updates.put("fotoPerfil", uri.toString());
-                        aplicarUpdates(dialog, updates, nuevoNombre, uri.toString());
-                    }))
-                    .addOnFailureListener(e -> {
-                        dialog.dismiss();
-                        Toast.makeText(this, "Error al subir imagen: " + e.getMessage(), Toast.LENGTH_LONG).show();
-                    });
+            subirNuevaFoto(dialog, updates, nuevoNombre);
         } else {
-            // Solo nombre
-            aplicarUpdates(dialog, updates, nuevoNombre, null);
+            aplicarUpdates(dialog, updates, nuevoNombre, quitarFoto ? "" : null);
         }
+    }
+
+    private void subirNuevaFoto(ProgressDialog dialog, Map<String, Object> updates, String nuevoNombre) {
+        String uid = usuario.getUid();
+        String filename = "perfiles/" + uid + "/" + UUID.randomUUID() + ".jpg";
+        StorageReference ref = FirebaseStorage.getInstance().getReference(filename);
+
+        StorageMetadata meta = new StorageMetadata.Builder()
+                .setContentType("image/jpeg")
+                .build();
+
+        ref.putFile(imageUri, meta)
+                .addOnSuccessListener(t -> ref.getDownloadUrl().addOnSuccessListener(uri -> {
+                    updates.put("fotoPerfil", uri.toString());
+                    aplicarUpdates(dialog, updates, nuevoNombre, uri.toString());
+                }))
+                .addOnFailureListener(e -> {
+                    dialog.dismiss();
+                    Toast.makeText(this, "Error al subir imagen: " + e.getMessage(), Toast.LENGTH_LONG).show();
+                });
     }
 
     private void aplicarUpdates(ProgressDialog dialog,
@@ -158,7 +177,6 @@ public class EditarPerfilActivity extends AppCompatActivity {
                     if (task.isSuccessful()) {
                         Toast.makeText(this, "Perfil actualizado", Toast.LENGTH_SHORT).show();
 
-                        // Devolver datos para refrescar el header sin reconsultar
                         Intent result = new Intent();
                         if (nombreActualizado != null && !nombreActualizado.isEmpty()) {
                             result.putExtra("nombre_actualizado", nombreActualizado);
