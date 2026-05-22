@@ -813,26 +813,28 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void mostrarDialogoBeneficios() {
-        new AlertDialog.Builder(this)
-                .setTitle("Beneficios de la Versión Premium")
-                .setMessage(
-                        "🎉 ¡Con Premium obtienes mucho más!\n\n" +
-                                "✅ Elimina todos los anuncios\n" +
-                                "📊 Gráficas por categoría\n" +
-                                "☁️ Backup en la nube\n" +
-                                "🔔 Notificaciones de gastos fijos\n" +
-                                "📄 Exportación a PDF\n" +
-                                "🔗 Sincronización entre dispositivos\n\n" +
-                                "¿Quieres más detalles o adquirir Premium?")
-                .setNegativeButton("Ahora no", null)
-                .setPositiveButton("Obtener beneficios Premium", (d, w) -> {
-                    if (billingManager != null) {
-                        billingManager.iniciarCompraPremium(MainActivity.this);
-                    } else {
-                        Toast.makeText(this, "Error al iniciar la compra", Toast.LENGTH_SHORT).show();
-                    }
-                })
-                .show();
+        View dialogView = getLayoutInflater().inflate(R.layout.dialog_beneficios_premium, null);
+        AlertDialog dialog = new AlertDialog.Builder(this)
+                .setView(dialogView)
+                .create();
+
+        dialogView.findViewById(R.id.btnCerrarPremiumDialog).setOnClickListener(v -> dialog.dismiss());
+        dialogView.findViewById(R.id.btnObtenerPremiumDialog).setOnClickListener(v -> {
+            dialog.dismiss();
+            if (billingManager != null) {
+                billingManager.iniciarCompraPremium(MainActivity.this);
+            } else {
+                Toast.makeText(this, "Error al iniciar la compra", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        dialog.setOnShowListener(d -> {
+            if (dialog.getWindow() != null) {
+                dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+            }
+        });
+        dialog.show();
     }
+
 
 }
