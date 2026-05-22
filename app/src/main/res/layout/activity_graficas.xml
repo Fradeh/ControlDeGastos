@@ -1,43 +1,128 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="16dp">
+    android:background="#FFF8FF"
+    android:fillViewport="true"
+    android:paddingStart="16dp"
+    android:paddingTop="18dp"
+    android:paddingEnd="16dp"
+    android:paddingBottom="18dp">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
-        <!-- Botón Atrás -->
-        <Button
+        <ImageButton
             android:id="@+id/btnAtras"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="44dp"
+            android:layout_height="44dp"
             android:layout_gravity="start"
-            android:layout_marginBottom="8dp"
-            android:backgroundTint="#eeeeee"
-            android:text="← Atrás"
-            android:textAllCaps="false"
-            android:textColor="#1976D2" />
+            android:layout_marginBottom="18dp"
+            android:background="@drawable/bg_back_button"
+            android:clickable="true"
+            android:contentDescription="Atrás"
+            android:focusable="true"
+            android:padding="9dp"
+            android:scaleType="centerInside"
+            android:src="@drawable/ic_back_custom" />
 
-        <com.github.mikephil.charting.charts.PieChart
-            android:id="@+id/pieChartCategorias"
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Análisis de gastos"
+            android:textColor="#27313F"
+            android:textSize="26sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:layout_marginBottom="22dp"
+            android:text="Una vista más limpia de tus categorías, gastos fijos e ingresos."
+            android:textColor="#6E7781"
+            android:textSize="14sp" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:text="Distribución por categoría"
+            android:textColor="#27313F"
+            android:textSize="20sp"
+            android:textStyle="bold" />
+
+        <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="300dp"
-            android:layout_marginBottom="16dp" />
+            android:layout_marginBottom="20dp"
+            android:background="@drawable/bg_chart_panel"
+            android:paddingStart="10dp"
+            android:paddingTop="14dp"
+            android:paddingEnd="10dp"
+            android:paddingBottom="10dp">
 
-        <com.github.mikephil.charting.charts.BarChart
-            android:id="@+id/barChartCategorias"
-            android:layout_width="match_parent"
-            android:layout_height="300dp"
-            android:layout_marginBottom="16dp" />
+            <com.github.mikephil.charting.charts.PieChart
+                android:id="@+id/pieChartCategorias"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+        </FrameLayout>
 
-        <!-- Antes era un LineChart -->
-        <com.github.mikephil.charting.charts.BarChart
-            android:id="@+id/lineChartCategorias"
+        <TextView
             android:layout_width="match_parent"
-            android:layout_height="300dp" />
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:text="Categorías con más gasto"
+            android:textColor="#27313F"
+            android:textSize="20sp"
+            android:textStyle="bold" />
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:minHeight="260dp"
+            android:layout_marginBottom="20dp"
+            android:background="@drawable/bg_chart_panel"
+            android:paddingStart="18dp"
+            android:paddingTop="18dp"
+            android:paddingEnd="18dp"
+            android:paddingBottom="18dp">
+
+            <LinearLayout
+                android:id="@+id/categoryRankingList"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical" />
+        </FrameLayout>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:text="Ingresos vs gastos"
+            android:textColor="#27313F"
+            android:textSize="20sp"
+            android:textStyle="bold" />
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:minHeight="220dp"
+            android:background="@drawable/bg_chart_panel"
+            android:paddingStart="18dp"
+            android:paddingTop="18dp"
+            android:paddingEnd="18dp"
+            android:paddingBottom="18dp">
+
+            <LinearLayout
+                android:id="@+id/monthlyBalancePanel"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical" />
+        </FrameLayout>
 
     </LinearLayout>
 </ScrollView>
