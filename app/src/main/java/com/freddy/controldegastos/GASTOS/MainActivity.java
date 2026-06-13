@@ -50,6 +50,7 @@ import com.freddy.controldegastos.GastosFijos.GastosFijosActivity;
 import com.freddy.controldegastos.PREMIUM.ExportarPdfHelper;
 import com.freddy.controldegastos.PREMIUM.PromoPremiumActivity;
 import com.freddy.controldegastos.R;
+import com.freddy.controldegastos.UTILS.AdMobConfig;
 import com.freddy.controldegastos.UTILS.BillingManager;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
@@ -80,7 +81,7 @@ public class MainActivity extends AppCompatActivity {
 
     // Header del Drawer
     private ImageView imgNavFoto;
-    private TextView txtNombreUsuario, txtCorreoUsuario;
+    private TextView txtNombreUsuario, txtCorreoUsuario, txtBadgePremium, txtEstadoPremiumInicio;
 
     private RecyclerView recyclerViewGastos;
     private GastoAdapterRecycler adapter;
@@ -133,15 +134,7 @@ public class MainActivity extends AppCompatActivity {
         }
 
         prefs = getSharedPreferences("mis_datos", MODE_PRIVATE);
-        esPremium = prefs.getBoolean("es_premium", false);
-
-        billingManager = new BillingManager(this, isUserPremium -> {
-            if (isUserPremium) {
-                esPremium = true;
-                prefs.edit().putBoolean("es_premium", true).apply();
-                if (premiumResuelto) aplicarUIporPremium();
-            }
-        });
+        esPremium = false;
 
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -161,6 +154,8 @@ public class MainActivity extends AppCompatActivity {
         imgNavFoto       = headerView.findViewById(R.id.imgNavFoto);
         txtNombreUsuario = headerView.findViewById(R.id.txtNombreUsuario);
         txtCorreoUsuario = headerView.findViewById(R.id.txtCorreoUsuario);
+        txtBadgePremium = headerView.findViewById(R.id.txtBadgePremium);
+        txtEstadoPremiumInicio = findViewById(R.id.txtEstadoPremiumInicio);
 
         TextView tvVersion = headerView.findViewById(R.id.tvVersionApp);
         try {
@@ -182,11 +177,16 @@ public class MainActivity extends AppCompatActivity {
             if (id == R.id.nav_manual_usuario) {
                 mostrarManualUsuarioRedisenado();
             } else if (id == R.id.nav_cerrar_sesion) {
+                limpiarEstadoPremiumLocal();
                 FirebaseAuth.getInstance().signOut();
                 startActivity(new Intent(MainActivity.this, LoginActivity.class)
                         .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK));
             } else if (id == R.id.nav_beneficios_premium) {
-                mostrarDialogoBeneficios();
+                if (esPremium) {
+                    Toast.makeText(this, "Tu cuenta Premium esta activa.", Toast.LENGTH_SHORT).show();
+                } else {
+                    mostrarDialogoBeneficios();
+                }
             } else if (id == R.id.nav_grafica_categorias) {
                 if (!ensurePremiumOrWarn()) return true;
                 startActivity(new Intent(MainActivity.this, GraficasActivity.class));
@@ -590,7 +590,7 @@ public class MainActivity extends AppCompatActivity {
     private void refrescarPremium() {
         FirebaseUser usuario = FirebaseAuth.getInstance().getCurrentUser();
         if (usuario == null) {
-            esPremium = false;
+            limpiarEstadoPremiumLocal();
             premiumResuelto = true;
             aplicarUIporPremium();
             return;
@@ -608,13 +608,33 @@ public class MainActivity extends AppCompatActivity {
             premiumResuelto = true;
             aplicarUIporPremium();
         }).addOnFailureListener(e -> {
-            esPremium = prefs.getBoolean("es_premium", false);
+            esPremium = false;
+            prefs.edit().putBoolean("es_premium", false).apply();
             premiumResuelto = true;
             aplicarUIporPremium();
         });
     }
 
+    private void limpiarEstadoPremiumLocal() {
+        esPremium = false;
+        if (prefs != null) {
+            prefs.edit().putBoolean("es_premium", false).apply();
+        }
+    }
+
     private void aplicarUIporPremium() {
+        int premiumVisibility = esPremium ? View.VISIBLE : View.GONE;
+        if (txtBadgePremium != null) {
+            txtBadgePremium.setVisibility(premiumVisibility);
+        }
+        if (txtEstadoPremiumInicio != null) {
+            txtEstadoPremiumInicio.setVisibility(premiumVisibility);
+        }
+        if (navigationView != null) {
+            navigationView.getMenu().findItem(R.id.nav_beneficios_premium)
+                    .setTitle(esPremium ? "Premium activo" : "Ver beneficios Premium");
+        }
+
         if (esPremium) {
             interstitialAdEditar = null;
             programarRecordatorioLunes();
@@ -665,7 +685,7 @@ public class MainActivity extends AppCompatActivity {
         if (esPremium) { interstitialAdEditar = null; return; }
 
         AdRequest adRequest = new AdRequest.Builder().build();
-        InterstitialAd.load(this, "ca-app-pub-2503649416779224/1348229276", adRequest,
+        InterstitialAd.load(this, AdMobConfig.INTERSTITIAL_AD_UNIT_ID, adRequest,
                 new InterstitialAdLoadCallback() {
                     @Override
                     public void onAdLoaded(@NonNull InterstitialAd ad) {
@@ -728,6 +748,12 @@ public class MainActivity extends AppCompatActivity {
 
     private void mostrarPromoSiEsNecesario() {
         if (!esPremium) {
+            boolean primeraEntradaOmitida = prefs.getBoolean("promo_primera_entrada_omitida", false);
+            if (!primeraEntradaOmitida) {
+                prefs.edit().putBoolean("promo_primera_entrada_omitida", true).apply();
+                return;
+            }
+
             long ultimaVez = prefs.getLong("promo_mostrada", 0);
             long ahora = System.currentTimeMillis();
             long unDia = 24 * 60 * 60 * 1000;
@@ -832,11 +858,7 @@ public class MainActivity extends AppCompatActivity {
         dialogView.findViewById(R.id.btnCerrarPremiumDialog).setOnClickListener(v -> dialog.dismiss());
         dialogView.findViewById(R.id.btnObtenerPremiumDialog).setOnClickListener(v -> {
             dialog.dismiss();
-            if (billingManager != null) {
-                billingManager.iniciarCompraPremium(MainActivity.this);
-            } else {
-                Toast.makeText(this, "Error al iniciar la compra", Toast.LENGTH_SHORT).show();
-            }
+            obtenerBillingManager().iniciarCompraPremium(MainActivity.this);
         });
 
         dialog.setOnShowListener(d -> {
@@ -847,5 +869,17 @@ public class MainActivity extends AppCompatActivity {
         dialog.show();
     }
 
+    private BillingManager obtenerBillingManager() {
+        if (billingManager == null) {
+            billingManager = new BillingManager(this, isUserPremium -> {
+                if (isUserPremium) {
+                    esPremium = true;
+                    prefs.edit().putBoolean("es_premium", true).apply();
+                    if (premiumResuelto) aplicarUIporPremium();
+                }
+            });
+        }
+        return billingManager;
+    }
 
 }

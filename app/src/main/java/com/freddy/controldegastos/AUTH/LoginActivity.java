@@ -16,7 +16,6 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.freddy.controldegastos.GASTOS.MainActivity;
 import com.freddy.controldegastos.R;
 import com.google.firebase.auth.FirebaseAuth;
 
@@ -68,7 +67,7 @@ public class LoginActivity extends AppCompatActivity {
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
                         Toast.makeText(this, "Sesión iniciada", Toast.LENGTH_SHORT).show();
-                        startActivity(new Intent(this, MainActivity.class));
+                        startActivity(new Intent(this, InicioActivity.class));
                         finish();
                     } else {
                         Toast.makeText(this, mensajeErrorLogin(task.getException()), Toast.LENGTH_LONG).show();

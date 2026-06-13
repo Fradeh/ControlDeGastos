@@ -9,10 +9,17 @@
         "fechaPremium": {
           ".write": false
         },
+        "premiumPurchaseTokenHash": {
+          ".write": false
+        },
         "$other": {
-          ".write": "$uid === auth.uid && $other !== 'esPremium' && $other !== 'fechaPremium'"
+          ".write": "$uid === auth.uid && $other !== 'esPremium' && $other !== 'fechaPremium' && $other !== 'premiumPurchaseTokenHash'"
         }
       }
+    },
+    "premiumPurchaseTokens": {
+      ".read": false,
+      ".write": false
     },
     "_backups": {
       "$uid": {

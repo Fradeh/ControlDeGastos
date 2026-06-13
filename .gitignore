@@ -15,3 +15,6 @@
 local.properties
 .vscode/
 functions/node_modules/
+.firebase/
+firebase-debug.log
+screenshots/emulator-current.png

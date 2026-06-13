@@ -18,7 +18,7 @@
             android:layout_height="match_parent"
             android:contentDescription="Sin anuncios"
             android:scaleType="centerInside"
-            android:src="@drawable/ic_delete_forever_24" />
+            android:src="@drawable/ic_delete_filter" />
     </FrameLayout>
 
     <LinearLayout

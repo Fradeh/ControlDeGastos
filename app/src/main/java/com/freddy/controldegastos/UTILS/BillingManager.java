@@ -38,6 +38,10 @@ public class BillingManager {
     private final PremiumStatusCallback callback;
 
     public BillingManager(Activity activity, PremiumStatusCallback callback) {
+        this(activity, callback, false);
+    }
+
+    public BillingManager(Activity activity, PremiumStatusCallback callback, boolean restaurarAlIniciar) {
         this.activityRef = activity;
         this.callback = callback;
 
@@ -46,19 +50,23 @@ public class BillingManager {
                 .setListener(this::handlePurchaseUpdate)
                 .build();
 
-        new Handler(Looper.getMainLooper()).postDelayed(() -> {
-            if (!yaRespondio && callback != null) {
-                Log.w("BillingManager", "Timeout alcanzado. Continuando sin Billing.");
-                callback.onResult(false);
-                yaRespondio = true;
-            }
-        }, 5000);
+        if (restaurarAlIniciar) {
+            new Handler(Looper.getMainLooper()).postDelayed(() -> {
+                if (!yaRespondio && callback != null) {
+                    Log.w("BillingManager", "Timeout alcanzado. Continuando sin Billing.");
+                    callback.onResult(false);
+                    yaRespondio = true;
+                }
+            }, 5000);
+        }
 
         billingClient.startConnection(new BillingClientStateListener() {
             @Override
             public void onBillingSetupFinished(@NonNull BillingResult billingResult) {
                 if (billingResult.getResponseCode() == BillingClient.BillingResponseCode.OK) {
-                    consultarComprasExistentes();
+                    if (restaurarAlIniciar) {
+                        consultarComprasExistentes(false);
+                    }
                     consultarProductoPremium();
                 }
             }
@@ -70,7 +78,7 @@ public class BillingManager {
         });
     }
 
-    private void consultarComprasExistentes() {
+    private void consultarComprasExistentes(boolean mostrarErrorAlUsuario) {
         QueryPurchasesParams params = QueryPurchasesParams.newBuilder()
                 .setProductType(BillingClient.ProductType.INAPP)
                 .build();
@@ -84,7 +92,7 @@ public class BillingManager {
                             callback.onResult(true);
                             yaRespondio = true;
                         }
-                    });
+                    }, mostrarErrorAlUsuario);
                     return;
                 }
             }
@@ -133,9 +141,11 @@ public class BillingManager {
                         }
 
                         reconocerCompraSiHaceFalta(purchase);
-                    });
+                    }, true);
                 }
             }
+        } else if (billingResult.getResponseCode() == BillingClient.BillingResponseCode.ITEM_ALREADY_OWNED) {
+            consultarComprasExistentes(true);
         }
     }
 
@@ -144,7 +154,7 @@ public class BillingManager {
                 && purchase.getPurchaseState() == Purchase.PurchaseState.PURCHASED;
     }
 
-    private void validarCompraPremiumEnBackend(Purchase purchase, Runnable onValidated) {
+    private void validarCompraPremiumEnBackend(Purchase purchase, Runnable onValidated, boolean mostrarErrorAlUsuario) {
         Map<String, Object> data = new HashMap<>();
         data.put("productId", ID_PRODUCTO);
         data.put("purchaseToken", purchase.getPurchaseToken());
@@ -159,10 +169,14 @@ public class BillingManager {
                 })
                 .addOnFailureListener(e -> {
                     Log.w("BillingManager", "No se pudo validar la compra Premium.", e);
-                    if (activityRef != null) {
+                    if (!yaRespondio && callback != null) {
+                        callback.onResult(false);
+                        yaRespondio = true;
+                    }
+                    if (mostrarErrorAlUsuario && activityRef != null) {
                         activityRef.runOnUiThread(() -> Toast.makeText(
                                 activityRef,
-                                "No se pudo validar la compra. Intenta nuevamente en unos segundos.",
+                                "Esta compra ya esta vinculada a otra cuenta. Inicia sesion con esa cuenta o usa otra cuenta de Google Play.",
                                 Toast.LENGTH_LONG
                         ).show());
                     }
@@ -198,6 +212,7 @@ public class BillingManager {
             billingClient.launchBillingFlow(activity, billingFlowParams);
         } else {
             Log.e("BillingManager", "Producto premium no cargado aun.");
+            Toast.makeText(activity, "Espera unos segundos e intenta de nuevo.", Toast.LENGTH_SHORT).show();
         }
     }
 }

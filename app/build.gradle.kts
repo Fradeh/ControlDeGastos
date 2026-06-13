@@ -11,8 +11,8 @@ android {
         applicationId = "com.freddy.controldegastos"
         minSdk = 27
         targetSdk = 36
-        versionCode = 15
-        versionName = "1.0.0" //Primera versión OFICIAL
+        versionCode = 21
+        versionName = "1.0.3" // Correccion de anuncios al iniciar sesion
         multiDexEnabled = true
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }

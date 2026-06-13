@@ -12,6 +12,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.freddy.controldegastos.GASTOS.MainActivity;
 import com.freddy.controldegastos.R;
+import com.freddy.controldegastos.UTILS.AdMobConfig;
 import com.google.android.gms.ads.AdError;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.FullScreenContentCallback;
@@ -94,10 +95,9 @@ public class InicioActivity extends AppCompatActivity {
 
     private void cargarYMostrarIntersticial() {
 
-        final String adUnitIdPrueba = "ca-app-pub-2503649416779224/1348229276";
         AdRequest adRequest = new AdRequest.Builder().build();
 
-        InterstitialAd.load(this, adUnitIdPrueba, adRequest, new InterstitialAdLoadCallback() {
+        InterstitialAd.load(this, AdMobConfig.INTERSTITIAL_AD_UNIT_ID, adRequest, new InterstitialAdLoadCallback() {
             @Override
             public void onAdLoaded(@NonNull InterstitialAd interstitialAd) {
                 Log.d(TAG, "Intersticial cargado.");
