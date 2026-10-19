@@ -11,8 +11,8 @@ android {
         applicationId = "com.freddy.controldegastos"
         minSdk = 27
         targetSdk = 36
-        versionCode = 21
-        versionName = "1.0.3" // Correccion de anuncios al iniciar sesion
+        versionCode = 22
+        versionName = "1.0.4" // Migracion a Google Play Billing 9
         multiDexEnabled = true
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -51,8 +51,8 @@ dependencies {
     implementation("com.github.PhilJay:MPAndroidChart:v3.1.0")
     implementation("com.google.android.gms:play-services-ads:22.6.0")
 
-    // ✅ Google Play Billing (v7+ requerido por Play)
-    implementation("com.android.billingclient:billing-ktx:7.0.0")
+    // Google Play Billing 9.1.0, integracion Java sin extensiones Kotlin
+    implementation("com.android.billingclient:billing:9.1.0")
 
     implementation("com.google.android.material:material:1.12.0")
     implementation("androidx.room:room-runtime:2.6.1")
