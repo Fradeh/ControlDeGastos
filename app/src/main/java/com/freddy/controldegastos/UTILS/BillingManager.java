@@ -13,6 +13,7 @@ import com.android.billingclient.api.BillingClient;
 import com.android.billingclient.api.BillingClientStateListener;
 import com.android.billingclient.api.BillingFlowParams;
 import com.android.billingclient.api.BillingResult;
+import com.android.billingclient.api.PendingPurchasesParams;
 import com.android.billingclient.api.ProductDetails;
 import com.android.billingclient.api.Purchase;
 import com.android.billingclient.api.QueryProductDetailsParams;
@@ -46,7 +47,9 @@ public class BillingManager {
         this.callback = callback;
 
         billingClient = BillingClient.newBuilder(activity)
-                .enablePendingPurchases()
+                .enablePendingPurchases(PendingPurchasesParams.newBuilder()
+                        .enableOneTimeProducts()
+                        .build())
                 .setListener(this::handlePurchaseUpdate)
                 .build();
 
@@ -116,8 +119,13 @@ public class BillingManager {
                         .setProductList(Collections.singletonList(product))
                         .build();
 
-        billingClient.queryProductDetailsAsync(queryParams, (billingResult, productDetailsList) -> {
-            if (!productDetailsList.isEmpty()) {
+        billingClient.queryProductDetailsAsync(queryParams, (billingResult, queryProductDetailsResult) -> {
+            if (billingResult.getResponseCode() != BillingClient.BillingResponseCode.OK) {
+                Log.w("BillingManager", "Error al consultar producto Premium: " + billingResult.getResponseCode());
+                return;
+            }
+            List<ProductDetails> productDetailsList = queryProductDetailsResult.getProductDetailsList();
+            if (productDetailsList != null && !productDetailsList.isEmpty()) {
                 premiumProductDetails = productDetailsList.get(0);
             }
         });
